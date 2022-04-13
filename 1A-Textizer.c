@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 int num = 0;
-int id = 21127; //学番
+int id = 22222; //学番
 int existFile(const char* path){
     FILE* fp = fopen(path, "r");
     if (fp == NULL) {
