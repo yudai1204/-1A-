@@ -37,7 +37,7 @@ int main(void){
     char filename[64],filenamed[64],textname[32],com[128];
     int i;
     printf("授業回数を入力: ");
-    scanf("%s",&num);
+    scanf("%d",&num);
     printf("ファイル名を入力: ");
     scanf("%s",&filename);
     sprintf(filenamed,"%s1.c",filename);
