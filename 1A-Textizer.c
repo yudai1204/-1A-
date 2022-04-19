@@ -6,6 +6,8 @@
 //(例2: prog1.c , prog2.c , prog3.c …というように連番の場合、「ファイル名を入力」のところでprogと入力する)
 //4.kadai[授業回数]-[学番].txtというファイルが完成する
 //注意:発展課題が連番になってない場合は、できたファイルに自分で追記してください
+//注意2:設定項目を追加しました
+//review、kadaiの選択と、ソースファイルのみの結合が選べます(無限ループのコードや、標準入力があるプログラムを含むの時用)
 #include <stdio.h>
 #include <stdlib.h>
 int num = 0;
@@ -38,9 +40,14 @@ int main(void){
     char filename[64],filenamed[64],textname[32],com[128];
     int i;
     char mode[32] = {""};
+    char source_only='0';
     printf("モードを入力してください(kadai or review): ");
     while(mode[0] == '\0'){
         scanf("%s",mode);
+    }
+    while( source_only != 'y' && source_only != 'n' ){
+        printf("各ファイルの結果を出力しますか？nを選択するとソースのみ結合されます: ( y / n )");
+        scanf("%c",&source_only);
     }
     printf("授業回数を入力: ");
     scanf("%d",&num);
@@ -67,19 +74,21 @@ int main(void){
         sprintf(&filenamed[0],"%s%d.c",filename,i);
         if (!existFile(filenamed))
             break;
-        printf("結合中(1/4)… : %s\n",filenamed);
+        printf("結合中… : %s\n",filenamed);
         if(!writeFile(textname,i,0)) return 0;
-        sprintf(com, "copy /b %s + %s\n",textname,filenamed);
+        sprintf(com, "copy /b %s + %s %s",textname,filenamed,textname);
         system(com);
         if(!writeFile(textname,i,1)) return 0;
-        printf("コンパイル中(2/4)…: %s\n",filenamed);
-        sprintf(com, "gcc %s\n",filenamed);
-        system(com);
-        printf("結果出力中(3/4)…: %s\n",filenamed);
-        system("a.exe > result.txt\n");
-        printf("結合中(4/4)… : %s\n",filenamed);
-        sprintf(com,"copy /b %s + result.txt\n",textname);
-        system(com);
+        if(source_only == 'y'){
+            printf("コンパイル中…: %s\n",filenamed);
+            sprintf(com, "gcc %s\n",filenamed);
+            system(com);
+            printf("結果出力中…: %s\n",filenamed);
+            system("a.exe > result.txt\n");
+            printf("結合中… : %s\n",filenamed);
+            sprintf(com,"copy /b %s + result.txt\n",textname);
+            system(com);
+        }
     }
 
     printf("===ファイルを結合しました===\n");
