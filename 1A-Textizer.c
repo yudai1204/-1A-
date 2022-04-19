@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 int num = 0;
-int id = 22222; //学番
+int id = 21127; //学番
 int existFile(const char* path){
     FILE* fp = fopen(path, "r");
     if (fp == NULL) {
@@ -37,6 +37,11 @@ int writeFile(const char* path , int n ,int mode){
 int main(void){
     char filename[64],filenamed[64],textname[32],com[128];
     int i;
+    char mode[32] = {""};
+    printf("モードを入力してください(kadai or review): ");
+    while(mode[0] == '\0'){
+        scanf("%s",mode);
+    }
     printf("授業回数を入力: ");
     scanf("%d",&num);
     printf("ファイル名を入力: ");
@@ -47,7 +52,7 @@ int main(void){
         return 0;
     }
     printf("ファイルを結合します…\n");
-    sprintf(textname,"kadai%d-%d.txt",num,id);
+    sprintf(textname,"%s%d-%d.txt",mode,num,id);
     //出力先ファイルを用意
     FILE *outputfile;         // 出力ストリーム
     outputfile = fopen(textname,"w,ccs=UTF-8");  // ファイルを書き込み用にオープン(開く)
@@ -63,10 +68,10 @@ int main(void){
         if (!existFile(filenamed))
             break;
         printf("結合中(1/4)… : %s\n",filenamed);
-        writeFile(textname,i,0);
+        if(!writeFile(textname,i,0)) return 0;
         sprintf(com, "copy /b %s + %s\n",textname,filenamed);
         system(com);
-        writeFile(textname,i,1);
+        if(!writeFile(textname,i,1)) return 0;
         printf("コンパイル中(2/4)…: %s\n",filenamed);
         sprintf(com, "gcc %s\n",filenamed);
         system(com);
